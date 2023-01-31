@@ -1,6 +1,6 @@
 import { FetchStatus } from "../../shared/enums";
 import type { Transaction } from "../../shared/types";
-
+import "./transactions.css";
 export const Transactions = ({ children }) => {
   return <div className="table">{children}</div>;
 };
@@ -24,11 +24,11 @@ Transactions.Content = ({
   status: FetchStatus;
 }) => {
   if (status === FetchStatus.PENDING) {
-    return "Spinning";
+    return <>"Spinning"</>;
   }
 
   if (status === FetchStatus.ERROR) {
-    return "Error";
+    return <>"Error"</>;
   }
   return (
     <div className="table-content">
