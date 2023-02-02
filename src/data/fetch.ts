@@ -1,25 +1,29 @@
-import { API_URL, RETRY_COUNT } from "../shared/constants";
-import { FetchStatus } from "../shared/enums";
-import type { Transaction } from "../shared/types";
-import { formatCurrency, formatDate } from "../shared/utils";
+import { collapseTextChangeRangesAcrossMultipleVersions } from 'typescript';
+import { API_URL, RETRY_COUNT } from '../shared/constants';
+import { FetchStatus } from '../shared/enums';
+import type { Transaction } from '../shared/types';
+import { formatCurrency, formatDate } from '../shared/utils';
+import { apiCall } from './api';
 
 export const fetchTransactions = async (): Promise<
   [Transaction[], number, FetchStatus]
 > => {
   try {
-    const data = await fetchWithRetry(API_URL.replace("{page}", "1"));
+    const data = await fetchWithRetry(API_URL.replace('{page}', '1'));
     const totalTransactionCount = data.totalCount;
     const noOfPages = Math.ceil(totalTransactionCount / 10);
     const promises = [];
 
+    console.log('vipin', data);
+
     for (let i = 2; i <= noOfPages; i++) {
-      promises.push(fetchWithRetry(API_URL.replace("{page}", `${i}`)));
+      promises.push(fetchWithRetry(API_URL.replace('{page}', `${i}`)));
     }
 
     const fulldata = await Promise.allSettled(promises);
 
     fulldata.forEach(async (apiData) => {
-      if (apiData.status === "fulfilled") {
+      if (apiData.status === 'fulfilled') {
         // Push every other sets into original data set
         data.transactions.push(...apiData.value.transactions);
       } else {
@@ -52,12 +56,12 @@ export const fetchTransactions = async (): Promise<
  * @returns
  */
 const fetchWithRetry = (url: string, retryCount: number = RETRY_COUNT) => {
-  return fetch(url)
+  return apiCall(url)
     .then((response) => {
       if (!response.ok && response.status === 404) {
         // Fetch resolves 404 so need to handle it explicitly. If a resource is 404,
         // it may not make sense to retry it. Could be the URL is incorrect.
-        return { status: "rejected" };
+        return { status: 'rejected' };
       }
 
       return response.json();
@@ -69,7 +73,7 @@ const fetchWithRetry = (url: string, retryCount: number = RETRY_COUNT) => {
       } else {
         // Log the error.
         throw new Error(
-          `Unable to fetch the data using the url ${url} after retry attempts`
+          `Unable to fetch the data using the url ${url} after retry attempts`,
         );
       }
     });
