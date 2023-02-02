@@ -67,7 +67,7 @@
   display: none;
 }
 
-.spinner,
+.no-transactions,
 .error {
   height: 200px;
   display: flex;

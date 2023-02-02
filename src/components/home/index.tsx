@@ -2,7 +2,9 @@ import React, { useEffect, useState } from 'react';
 import { fetchTransactions } from '../../data/fetch';
 import { FetchStatus } from '../../shared/enums';
 import { Transaction } from '../../shared/types';
+import { Spinner } from '../spinner';
 import { Transactions } from '../transactions';
+import './home.css';
 
 export const Home = () => {
   const [data, setData] = useState<Transaction[]>([]);
@@ -25,6 +27,14 @@ export const Home = () => {
 
     load();
   }, []);
+
+  if (fetchStatus === FetchStatus.PENDING) {
+    return (
+      <div className="spinner">
+        <Spinner />
+      </div>
+    );
+  }
 
   return (
     <Transactions>
