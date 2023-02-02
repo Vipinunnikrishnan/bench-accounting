@@ -1,10 +1,10 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { fetchTransactions } from "../../data/fetch";
 import { FetchStatus } from "../../shared/enums";
 import { Transaction } from "../../shared/types";
 import { Transactions } from "../transactions";
 
-export const Home = ({}) => {
+export const Home = () => {
   const [data, setData] = useState<Transaction[]>([]);
   const [total, setTotal] = useState<number>(0);
   const [fetchStatus, setFetchStatus] = useState<FetchStatus>(
@@ -25,9 +25,9 @@ export const Home = ({}) => {
     load();
   }, []);
   return (
-    <Transactions>
-      <Transactions.Header total={total} />
-      <Transactions.Content transactions={data} status={fetchStatus} />
-    </Transactions>
+      <Transactions>
+          <Transactions.Header total={ total } />
+          <Transactions.Content transactions={ data } status={ fetchStatus } />
+      </Transactions>
   );
 };
